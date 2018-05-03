@@ -70,8 +70,8 @@ public class sub_recycler_adapter extends RecyclerView.Adapter<sub_recycler_adap
         // Type = 2 (CodeChef)
         if(list.get(position).getJudge() == "codeforces") type = 1;
         else type = 2;
-
-        holder.image_judge.setImageResource(R.drawable.codechef_round_icon);
+        if(type == 1)  holder.image_judge.setImageResource(R.drawable.codeforces_round_icon);
+        else if(type == 2) holder.image_judge.setImageResource(R.drawable.codechef_round_icon);
         holder.problem_name.setText(list.get(position).problem_name);
         holder.solution_time.setText(list.get(position).solution_time);
         holder.solution_status.setText(list.get(position).solution_status);

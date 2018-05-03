@@ -27,8 +27,12 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.StringTokenizer;
+
+import static java.lang.Math.min;
 
 public class sub_recyclerview extends AppCompatActivity {
 
@@ -85,7 +89,6 @@ public class sub_recyclerview extends AppCompatActivity {
                     isScrolling = true;
                 }
             }
-
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
@@ -93,14 +96,18 @@ public class sub_recyclerview extends AppCompatActivity {
                 totalItems = recyclerView.getLayoutManager().getItemCount();
                 scrollOutItems = ((LinearLayoutManager)recyclerView.getLayoutManager()).findFirstVisibleItemPosition();;
 
-                if(isScrolling && (currentItems + scrollOutItems == totalItems) && (dy > 0)) { // dy > 0 means scrolling down
+                if(isScrolling && (currentItems + scrollOutItems == totalItems) && (dy > 0) && type != 1) { // dy > 0 means scrolling down
                     isScrolling = false;
                     new BackgroundParsing(sub_recyclerview.this, 2, type).execute();
                 }
             }
         });
 
+
+
+
         if(type == 1) { // Mix
+            ye = 2018; ind = 0; page = 1; index = 1;
             myAdapter = new sub_recycler_adapter(mContext, Handle, Mix, bottomSheetBehavior, problem_statement, source_code, bottom_sheet_layout);
             layoutManager = new LinearLayoutManager(mContext);
             recyclerView.setLayoutManager(layoutManager);
@@ -108,6 +115,7 @@ public class sub_recyclerview extends AppCompatActivity {
 
             new BackgroundParsing(sub_recyclerview.this, 1, 1).execute();
         } else if(type == 2) { // Codeforces
+            ye = 2018; ind = 0; page = 1; index = 1;
             myAdapter = new sub_recycler_adapter(mContext, Handle, Codeforces, bottomSheetBehavior, problem_statement, source_code, bottom_sheet_layout);
             layoutManager = new LinearLayoutManager(mContext);
             recyclerView.setLayoutManager(layoutManager);
@@ -115,6 +123,7 @@ public class sub_recyclerview extends AppCompatActivity {
 
             new BackgroundParsing(sub_recyclerview.this, 1, 2).execute();
         } else if(type == 3) { // Codechef
+            ye = 2018; ind = 0; page = 1; index = 1;
             myAdapter = new sub_recycler_adapter(mContext, Handle, Codechef, bottomSheetBehavior, problem_statement, source_code, bottom_sheet_layout);
             layoutManager = new LinearLayoutManager(mContext);
             recyclerView.setLayoutManager(new LinearLayoutManager(sub_recyclerview.this));
@@ -126,9 +135,9 @@ public class sub_recyclerview extends AppCompatActivity {
 
     public class BackgroundParsing extends AsyncTask<Void, Void, Void> {
         ProgressDialog dialog;
+
         Context mContext;
         int progress_type, len, judge_type;
-
         BackgroundParsing(Context activity, int progress_type, int judge_type) {
             dialog = new ProgressDialog(activity);
             mContext = activity;
@@ -164,23 +173,101 @@ public class sub_recyclerview extends AppCompatActivity {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            if(type == 1) {
-                // Code for Mix
-            } else if(type == 2) {
+            if(type == 1) { // Code for Mix
+                Mix.addAll(make_for_mix());
+            } else if(type == 2) { // Code for Codeforces
                 len = Codeforces.size();
-                make_for_codeforces();
-            } else if(type == 3) {
+                Codeforces.addAll(make_for_codeforces());
+            } else if(type == 3) { // Code for Codechef
                 len = Codechef.size();
-                make_for_codechef();
+                Codechef.addAll(make_for_codechef());
             }
             return null;
         }
+
+    }
+    public List make_for_mix() {
+        List<submission_activity> list = new ArrayList<>();
+        List<submission_activity> main_list = new ArrayList<>();
+        List<Time_Class> tmp_list = new ArrayList<>();
+
+        list.addAll(make_for_codechef());
+        list.addAll(make_for_codechef());
+        list.addAll(make_for_codechef());
+        list.addAll(make_for_codechef());
+        list.addAll(make_for_codechef());
+
+        int min, hour, day = 0, month, year;
+        String time;
+        int le = list.size();
+        for(int i=0; i<list.size(); i++) { // For Codechef
+            time = list.get(i).solution_time;
+
+            hour = (time.charAt(0) - '0')*10 + (time.charAt(1)-'0');
+            min = (time.charAt(3) - '0')*10 + (time.charAt(4)-'0');
+            if(time.substring(6, 8). equals("PM")) hour += 12;
+            day = (time.charAt(9) - '0')*10 + (time.charAt(10)-'0');
+            month = (time.charAt(12) - '0')*10 + (time.charAt(13)-'0');
+            year = 2000 + (time.charAt(15) - '0')*10 + (time.charAt(16)-'0');
+
+            tmp_list.add(new Time_Class(i, min, hour, day, month, year));
+        }
+
+        list.addAll(make_for_codeforces());
+        list.addAll(make_for_codeforces());
+        list.addAll(make_for_codeforces());
+        list.addAll(make_for_codeforces());
+        list.addAll(make_for_codeforces());
+
+        for(int i=le; i<list.size(); i++) { // For Codeforces
+            time = list.get(i).solution_time;
+
+            hour = (time.charAt(0) - '0')*10 + (time.charAt(1)-'0');
+            min = (time.charAt(3) - '0')*10 + (time.charAt(4)-'0');
+            year = (time.charAt(9) - '0')*1000 + (time.charAt(10) - '0')*100 + (time.charAt(11) - '0')*10 + (time.charAt(12) - '0');
+            month = (time.charAt(14) - '0')*10 + (time.charAt(15)-'0');
+            day = (time.charAt(17) - '0')*10 + (time.charAt(18)-'0');
+
+            tmp_list.add(new Time_Class(i, min, hour, day, month, year));
+        }
+
+        Collections.sort(tmp_list, new Comparator<Time_Class>() {
+            @Override
+            public int compare(Time_Class x, Time_Class y) {
+                System.out.println(x.year + " " + x.month + " " + x.day + " " + x.hour + " " + x.min);
+                System.out.println(y.year + " " + y.month + " " + y.day + " " + y.hour + " " + y.min);
+                System.out.println();
+
+                if(x.year == y.year) {
+                    if(x.month == y.month) {
+                        if(x.day == y.day) {
+                            if(x.hour == y.hour) {
+                                return x.min > y.min ? -1 : 1;
+                            }
+                            return x.hour > y.hour ? -1 : 1;
+                        }
+                        return x.day > y.day ? -1 : 1;
+                    }
+                    return x.month > y.month ? -1 : 1;
+                }
+                return x.year > y.year ? -1 : 1;
+            }
+        });
+
+        for(int i=0; i< min(50,tmp_list.size()); i++) {
+
+            main_list.add(list.get(tmp_list.get(i).ind));
+        }
+
+        return main_list;
     }
 
-    public void make_for_codeforces() {
+    public List make_for_codeforces() {
+        List <submission_activity>list = new ArrayList<>();
         try {
             int limit = Integer.valueOf(Jsoup.connect("http://codeforces.com/submissions/"+handle+"/page/1").get().getElementsByClass("pagination").select("ul").select("li").get(5).text());
             int val = 0;
+
 
             for(int i=1; i<=limit ; i++) {
 
@@ -212,17 +299,24 @@ public class sub_recyclerview extends AppCompatActivity {
                     store.problem_difficulty = "Entry oise na";
 
                     if(type == 2) Codeforces.add(store);
+                    else list.add(store);
                     val++;
                     if(val >= 20) break;
                 }
                 if(val >= 20) break;
             }
-        } catch (Exception e) {}
+        } catch (Exception e) {
+            Log.d("catch: ", "codeforces");
+        } finally{
+            return list;
+        }
     }
-    public void make_for_codechef() {
+
+    public List make_for_codechef() {
         /*new Thread(new Runnable() {
             @Override
             public void run() {*/
+                List<submission_activity> list = new ArrayList<>();
                 try {
                     int val = 0;
                     for(int y=ye; ; y--) {
@@ -271,16 +365,33 @@ public class sub_recyclerview extends AppCompatActivity {
                             //Document doc2 = Jsoup.connect(tmp).get();
 
                             if(type == 3) Codechef.add( new submission_activity(solution_id, solution_time, problem_code, solution_status, problem_link, solution_link, "codechef", solution_language, solution_execution_time, usage_memory, problem_difficulty)) ;
-
+                            else list.add(new submission_activity(solution_id, solution_time, problem_code, solution_status, problem_link, solution_link, "codechef", solution_language, solution_execution_time, usage_memory, problem_difficulty));
                             if(val >= 20) break;
                         }
                         if(val >= 20) break;
                     }
                 } catch(Exception e) {
                     System.out.println("Catch ");
-
+                } finally {
+                    return list;
                 }
            /* }
         }).start();*/
+    }
+
+    @Override
+    public void onBackPressed() {
+        ye = 2018; ind = 0; page = 1; index = 1;
+    }
+}
+class Time_Class {
+    int ind, min, hour, day, month, year;
+    Time_Class(int ind, int min, int hour, int day, int month, int year){
+        this.ind = ind;
+        this.min = min;
+        this.hour = hour;
+        this.day = day;
+        this.month = month;
+        this.year = year;
     }
 }
