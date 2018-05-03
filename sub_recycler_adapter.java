@@ -22,16 +22,17 @@ public class sub_recycler_adapter extends RecyclerView.Adapter<sub_recycler_adap
     private TextView username;
     List<submission_activity> list = new ArrayList<>();
     private BottomSheetBehavior bottomSheetBehavior;
-    LinearLayout problem_statement, source_code;
+    LinearLayout problem_statement, source_code, bottom_sheet_layout;
     Context mContext;
 
-    public sub_recycler_adapter(Context mContext, TextView username, List<submission_activity> list, BottomSheetBehavior bottomSheetBehavior, LinearLayout problem_statement, LinearLayout source_code) {
+    public sub_recycler_adapter(Context mContext, TextView username, List<submission_activity> list, BottomSheetBehavior bottomSheetBehavior, LinearLayout problem_statement, LinearLayout source_code, LinearLayout bottom_sheet_layout) {
         this.mContext = mContext;
         this.username = username;
         this.list = list;
         this.bottomSheetBehavior = bottomSheetBehavior;
         this.problem_statement = problem_statement;
         this.source_code = source_code;
+        this.bottom_sheet_layout = bottom_sheet_layout;
     }
 
     @Override
@@ -81,9 +82,23 @@ public class sub_recycler_adapter extends RecyclerView.Adapter<sub_recycler_adap
         holder.sub_card_view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                if(bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_COLLAPSED || bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_HIDDEN )bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                else bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
             }
         });
+        bottom_sheet_layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
+                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                } else if(bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
+                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+                } else {
+                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+                }
+            }
+        });
+
         problem_statement.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
