@@ -55,12 +55,12 @@ public class sub_recycler_adapter extends RecyclerView.Adapter<sub_recycler_adap
     public int getItemViewType(int position) {
         String status = list.get(position).solution_status;
 
-        if(status.startsWith("accepted")) return 1;
+        if(status.startsWith("accepted") || status.startsWith("Accepted")) return 1;
         if(status.startsWith("partially")) return 2;
-        if(status.startsWith("wrong")) return 3;
-        if(status.startsWith("time")) return 4;
-        if(status.startsWith("runtime")) return 5;
-        return 0;
+        if(status.startsWith("wrong") || status.startsWith("Wrong")) return 3;
+        if(status.startsWith("time") || status.startsWith("Time")) return 4;
+        if(status.startsWith("runtime") || status.startsWith("Runtime")) return 5;
+        return 2;
     }
 
     @Override
