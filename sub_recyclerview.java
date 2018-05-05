@@ -32,6 +32,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import thereisnospon.codeview.CodeView;
+
 import static java.lang.Math.min;
 
 public class sub_recyclerview extends AppCompatActivity {
@@ -49,6 +51,8 @@ public class sub_recyclerview extends AppCompatActivity {
     sub_recycler_adapter myAdapter;
     Context mContext;
     Boolean isScrolling = false;
+    CodeView codeview;
+
     int type, currentItems, totalItems, scrollOutItems;
 
     int ye = 2018, ind = 0; // For Codechef
@@ -102,9 +106,6 @@ public class sub_recyclerview extends AppCompatActivity {
                 }
             }
         });
-
-
-
 
         if(type == 1) { // Mix
             ye = 2018; ind = 0; page = 1; index = 1;
@@ -261,7 +262,6 @@ public class sub_recyclerview extends AppCompatActivity {
 
         return main_list;
     }
-
     public List make_for_codeforces() {
         List <submission_activity>list = new ArrayList<>();
         try {
@@ -297,7 +297,7 @@ public class sub_recyclerview extends AppCompatActivity {
                     store.solution_execution_time = tmp.get(6).text();
                     store.usage_memory = tmp.get(7).text();
                     store.problem_difficulty = "Entry oise na";
-
+                    store.handle = handle;
                     if(type == 2) Codeforces.add(store);
                     else list.add(store);
                     val++;
@@ -311,7 +311,6 @@ public class sub_recyclerview extends AppCompatActivity {
             return list;
         }
     }
-
     public List make_for_codechef() {
         /*new Thread(new Runnable() {
             @Override
@@ -360,12 +359,13 @@ public class sub_recyclerview extends AppCompatActivity {
                             String tmp = solution_link;
                             int len = solution_link.length();
 
-                            tmp = tmp.replaceFirst("viewsolution", "viewplaintext");
+                            solution_link = tmp.replaceFirst("viewsolution", "viewplaintext");
 
-                            //Document doc2 = Jsoup.connect(tmp).get();
-
-                            if(type == 3) Codechef.add( new submission_activity(solution_id, solution_time, problem_code, solution_status, problem_link, solution_link, "codechef", solution_language, solution_execution_time, usage_memory, problem_difficulty)) ;
-                            else list.add(new submission_activity(solution_id, solution_time, problem_code, solution_status, problem_link, solution_link, "codechef", solution_language, solution_execution_time, usage_memory, problem_difficulty));
+                            if(y == 2018 && i == 0) {
+                                System.out.println(solution_link);
+                            }
+                            if(type == 3) Codechef.add( new submission_activity(handle, solution_id, solution_time, problem_code, solution_status, problem_link, solution_link, "codechef", solution_language, solution_execution_time, usage_memory, problem_difficulty)) ;
+                            else list.add(new submission_activity(handle, solution_id, solution_time, problem_code, solution_status, problem_link, solution_link, "codechef", solution_language, solution_execution_time, usage_memory, problem_difficulty));
                             if(val >= 20) break;
                         }
                         if(val >= 20) break;
@@ -377,11 +377,6 @@ public class sub_recyclerview extends AppCompatActivity {
                 }
            /* }
         }).start();*/
-    }
-
-    @Override
-    public void onBackPressed() {
-        ye = 2018; ind = 0; page = 1; index = 1;
     }
 }
 class Time_Class {

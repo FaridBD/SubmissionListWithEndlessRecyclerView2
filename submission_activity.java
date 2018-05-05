@@ -1,11 +1,12 @@
 package com.example.farid.submissionlistwithendlessrecyclerview;
 
 public class submission_activity {
-    String solution_id, solution_time,  problem_name, solution_status,  problem_link, solution_link, judge, soulution_language, solution_execution_time, usage_memory, problem_difficulty;
+    String handle,solution_id, solution_time,  problem_name, solution_status,  problem_link, solution_link, judge, soulution_language, solution_execution_time, usage_memory, problem_difficulty;
 
     public submission_activity() {}
 
-    public submission_activity(String solution_id, String solution_time, String problem_name, String solution_status, String problem_link, String soltuon_link, String judge, String soulution_language, String solution_execution_time, String usage_memory, String problem_difficulty) {
+    public submission_activity(String handle, String solution_id, String solution_time, String problem_name, String solution_status, String problem_link, String soltuon_link, String judge, String soulution_language, String solution_execution_time, String usage_memory, String problem_difficulty) {
+        this.handle = handle;
         this.solution_id = solution_id;
         this.solution_time = solution_time;
         this.problem_name = problem_name;
@@ -17,6 +18,14 @@ public class submission_activity {
         this.solution_execution_time = solution_execution_time;
         this.usage_memory = usage_memory;
         this.problem_difficulty = problem_difficulty;
+    }
+
+    public String getHandle() {
+        return handle;
+    }
+
+    public String getSolution_link() {
+        return solution_link;
     }
 
     public String getProblem_difficulty() {

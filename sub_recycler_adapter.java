@@ -18,6 +18,8 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
+import thereisnospon.codeview.CodeView;
+
 public class sub_recycler_adapter extends RecyclerView.Adapter<sub_recycler_adapter.sub_recycler_viewHolder>{
     private TextView username;
     List<submission_activity> list = new ArrayList<>();
@@ -119,7 +121,10 @@ public class sub_recycler_adapter extends RecyclerView.Adapter<sub_recycler_adap
                 bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
                 String solution_link = list.get(position).solution_link;
                 if(solution_link != null) {
-                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(solution_link));
+                    Intent intent = new Intent(mContext, sub_code_view.class);
+                    intent.putExtra("link", solution_link);
+                    intent.putExtra("problem_name", list.get(position).problem_name);
+                    intent.putExtra("handle", list.get(position).getHandle());
                     mContext.startActivity(intent);
                 }
                 else {
